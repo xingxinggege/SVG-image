@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="en-us">
+  <head>
+    <meta charset="UTF-8">
+    <title>html中的svg图像处理 by xingxinggege</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" type="text/css" href="stylesheets/normalize.css" media="screen">
+    <link href='https://fonts.googleapis.com/css?family=Open+Sans:400,700' rel='stylesheet' type='text/css'>
+    <link rel="stylesheet" type="text/css" href="stylesheets/stylesheet.css" media="screen">
+    <link rel="stylesheet" type="text/css" href="stylesheets/github-light.css" media="screen">
+  </head>
+  <body>
+    <section class="page-header">
+      <h1 class="project-name">html中的svg图像处理</h1>
+      <h2 class="project-tagline">html中的svg图像处理</h2>
+      <a href="https://github.com/xingxinggege/html-svg-" class="btn">View on GitHub</a>
+      <a href="https://github.com/xingxinggege/html-svg-/zipball/master" class="btn">Download .zip</a>
+      <a href="https://github.com/xingxinggege/html-svg-/tarball/master" class="btn">Download .tar.gz</a>
+    </section>
+
+    <section class="main-content">
+      <h3>
+<a id="html中-svg-图像图像处理" class="anchor" href="#html%E4%B8%AD-svg-%E5%9B%BE%E5%83%8F%E5%9B%BE%E5%83%8F%E5%A4%84%E7%90%86" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>HTML中 SVG 图像图像处理.</h3>
+
+<p>SVG是“可缩放矢量图”（Scalable Vector Graphics）的缩写，是一种描述向量图形的XML格式的标记化语言。也就是说，SVG本质上是文本文件，格式采用XML，可以在浏览器中显示出矢量图像。由于结构是XML格式，使得它可以插入HTML文档，成为DOM的一部分，然后用JavaScript和CSS进行操作。
+相比传统的图像文件格式（比如JPG和PNG），SVG图像的优势就是文件体积小，并且放大多少倍都不会失真，因此非常合适用于网页。</p>
+
+<p>SVG图像可以用Adobe公司的Illustrator软件、开源软件Inkscape等生成。目前，所有主流浏览器都支持，对于低于IE 9的浏览器，可以使用第三方的polyfills函数库。</p>
+
+<h2>
+<a id="插入svg文件" class="anchor" href="#%E6%8F%92%E5%85%A5svg%E6%96%87%E4%BB%B6" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>插入SVG文件</h2>
+
+<p>SVG插入网页的方法有多种，可以用在img、object、embed、iframe等标签，以及CSS的background-image属性。</p>
+
+<pre><code>&lt;img src="circle.svg"&gt;
+&lt;object id="object" data="circle.svg" type="image/svg+xml"&gt;&lt;/object&gt;
+&lt;embed id="embed" src="icon.svg" type="image/svg+xml"&gt;
+&lt;iframe id="iframe" src="icon.svg"&gt;&lt;/iframe&gt;
+</code></pre>
+
+<p>上面是四种在网页中插入SVG图像的方式。</p>
+
+<p>此外，SVG文件还可以插入其他DOM元素，比如div元素，请看下面的例子（使用了jQuery函数库）。</p>
+
+<pre><code>&lt;div id="stage"&gt;&lt;/div&gt;
+
+&lt;script&gt;
+$("#stage").load('icon.svg',function(response){
+  $(this).addClass("svgLoaded");
+  if(!response){
+    // 加载失败的处理代码
+  }
+});
+&lt;/script&gt;
+</code></pre>
+
+<h2>
+<a id="svg格式" class="anchor" href="#svg%E6%A0%BC%E5%BC%8F" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>svg格式</h2>
+
+<p>SVG文件采用XML格式，就是普通的文本文件。</p>
+
+<pre><code>&lt;svg width="300" height="180"&gt;
+  &lt;circle cx="30"  cy="50" r="25" /&gt;
+  &lt;circle cx="90"  cy="50" r="25" class="red" /&gt;
+  &lt;circle cx="150" cy="50" r="25" class="fancy" /&gt;
+&lt;/svg&gt;
+</code></pre>
+
+<p>上面的svg文件，定义了三个圆，它们的cx、cy、r属性分别为x坐标、y坐标和半径。利用class属性，可以为这些圆指定样式。</p>
+
+<pre><code>.red {
+  fill: red; /* not background-color! */
+}
+
+.fancy {
+  fill: none;
+  stroke: black; /* similar to border-color */
+  stroke-width: 3pt; /* similar to border-width */
+}
+</code></pre>
+
+<p>上面代码中，fill属性表示填充色，stroke属性表示描边色，stroke-width属性表示边线宽度。</p>
+
+<p>除了circle标签表示圆，SVG文件还可以使用表示其他形状的标签。</p>
+
+<pre><code>&lt;svg&gt;
+  &lt;line x1="0" y1="0" x2="200" y2="0" style="stroke:rgb(0,0,0);stroke-width:1"/&gt;&lt;/line&gt;
+  &lt;rect x="0" y="0" height="100" width="200" style="stroke: #70d5dd; fill: #dd524b" /&gt;
+  &lt;ellipse cx="60" cy="60" ry="40" rx="20" stroke="black" stroke-width="5" fill="silver"/&gt;&lt;/ellipse&gt;
+    &lt;polygon fill="green" stroke="orange" stroke-width="10" points="350, 75  379,161 469,161 397,215 423,301 350,250 277,301 303,215 231,161 321,161"/&gt;&lt;polygon&gt;
+    &lt;path id="path1" d="M160.143,196c0,0,62.777-28.033,90-17.143c71.428,28.572,73.952-25.987,84.286-21.428" style="fill:none;stroke:2;"&gt;&lt;/path&gt;  
+&lt;/svg&gt;
+</code></pre>
+
+<p>上面代码中，line、rect、ellipse、polygon和path标签，分别表示线条、矩形、椭圆、多边形和路径。</p>
+
+<p>g标签用于将多个形状组成一组，表示group。</p>
+
+<pre><code>&lt;svg width="300" height="180"&gt;
+  &lt;g transform="translate(5, 15)"&gt;
+    &lt;text x="0" y="0"&gt;Howdy!&lt;/text&gt;
+    &lt;path d="M0,50 L50,0 Q100,0 100,50"
+      fill="none" stroke-width="3" stroke="black" /&gt;
+  &lt;/g&gt;
+&lt;/svg&gt;
+</code></pre>
+
+<h2>
+<a id="svg文件的javascript操作" class="anchor" href="#svg%E6%96%87%E4%BB%B6%E7%9A%84javascript%E6%93%8D%E4%BD%9C" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>SVG文件的JavaScript操作</h2>
+
+<ul>
+<li>获取SVG DOM
+如果使用img标签插入SVG文件，则无法获取SVG DOM。使用object、iframe、embed标签，可以获取SVG DOM。</li>
+</ul>
+
+<pre><code>var svgObject = document.getElementById("object").contentDocument;
+var svgIframe = document.getElementById("iframe").contentDocument;
+var svgEmbed = document.getElementById("embed").getSVGDocument(); 
+</code></pre>
+
+<p>由于svg文件就是一般的XML文件，因此可以用DOM方法，选取页面元素。</p>
+
+<pre><code>// 改变填充色
+document.getElementById("theCircle").style.fill = "red";
+
+// 改变元素属性
+document.getElementById("theCircle").setAttribute("class", "changedColors");
+
+// 绑定事件回调函数
+document.getElementById("theCircle").addEventListener("click", function() {
+   console.log("clicked")
+});
+</code></pre>
+
+<ul>
+<li>读取svg源码
+由于svg文件就是一个XML代码的文本文件，因此可以通过读取XML代码的方式，读取svg源码。
+假定网页中有一个svg元素。</li>
+</ul>
+
+<pre><code>&lt;div id="svg-container"&gt;
+    &lt;svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" xml:space="preserve" width="500" height="440"&gt;
+        &lt;!-- svg code --&gt;
+    &lt;/svg&gt;
+&lt;/div&gt;
+</code></pre>
+
+<p>使用XMLSerializer实例的serializeToString方法，获取svg元素的代码。</p>
+
+<pre><code>var svgString = new XMLSerializer().serializeToString(document.querySelector('svg'));
+</code></pre>
+
+<ul>
+<li>将svg图像转为canvas图像
+首先，需要新建一个img对象，将svg图像指定到该img对象的src属性。</li>
+</ul>
+
+<pre><code>var img = new Image();
+var svg = new Blob([svgString], {type: "image/svg+xml;charset=utf-8"});
+
+var DOMURL = self.URL || self.webkitURL || self;
+var url = DOMURL.createObjectURL(svg);
+
+img.src = url;
+</code></pre>
+
+<p>然后，当图像加载完成后，再将它绘制到canvas元素。</p>
+
+<pre><code>img.onload = function() {
+    var canvas = document.getElementById("canvas");
+    var ctx = canvas.getContext("2d");
+    ctx.drawImage(img, 0, 0);
+};
+</code></pre>
+
+      <footer class="site-footer">
+        <span class="site-footer-owner"><a href="https://github.com/xingxinggege/html-svg-">html中的svg图像处理</a> is maintained by <a href="https://github.com/xingxinggege">xingxinggege</a>.</span>
+
+        <span class="site-footer-credits">This page was generated by <a href="https://pages.github.com">GitHub Pages</a> using the <a href="https://github.com/jasonlong/cayman-theme">Cayman theme</a> by <a href="https://twitter.com/jasonlong">Jason Long</a>.</span>
+      </footer>
+
+    </section>
+
+  
+  </body>
+</html>
